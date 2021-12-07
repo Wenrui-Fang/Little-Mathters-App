@@ -5,16 +5,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".SetsActivity">
+    tools:context="edu.neu.madcourse.mathters.SetsActivity">
 
-    <android.support.v7.widget.Toolbar
+    <androidx.appcompat.widget.Toolbar
         android:id="@+id/set_toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/colorPrimary"
         android:theme="@style/ThemeOverlay.AppCompat.Dark"
 
-        ></android.support.v7.widget.Toolbar>
+        ></androidx.appcompat.widget.Toolbar>
 
     <TextView
         android:layout_width="match_parent"

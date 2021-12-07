@@ -9,7 +9,7 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-        testCompile
+
     }
 
     buildTypes {
@@ -18,11 +18,11 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
-//    compileOptions {
-//        sourceCompatibility JavaVersion.VERSION_1_8
-//        targetCompatibility JavaVersion.VERSION_1_8
-//    }
-    testBuildType "staging"
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+//    testBuildType "staging"
 }
 
 dependencies {
@@ -45,6 +45,9 @@ dependencies {
 
     implementation platform('com.google.firebase:firebase-bom:29.0.1')
     //noinspection GradleCompatible
+
+    implementation 'com.android.support.constraint:constraint-layout:1.1.0'
+    implementation 'com.google.android.material:material:1.4.0'
 
     implementation 'com.android.support.test:runner:0.2'
     androidTestImplementation 'androidx.test:core:1.0.0-beta02'

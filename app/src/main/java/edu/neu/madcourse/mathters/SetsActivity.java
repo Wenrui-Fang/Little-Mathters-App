@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.widget.GridView;
@@ -63,7 +64,7 @@ public class SetsActivity extends AppCompatActivity {
     {
 
         setsIDs.clear();
-
+//        Log.e("test", SplashActivity.catList.get(SplashActivity.selected_cat_index).getId());
         firestore.collection("QUIZ").document(SplashActivity.catList.get(SplashActivity.selected_cat_index).getId())
                 .get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override

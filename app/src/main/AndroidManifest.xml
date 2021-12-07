@@ -9,18 +9,19 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="com.madcourse.edu.neu.madcourse.mathters.ScoreActivity"></activity>
-        <activity android:name="com.madcourse.edu.neu.madcourse.mathters.QuestionActivity" />
-        <activity android:name="com.madcourse.edu.neu.madcourse.mathters.SetsActivity" />
-        <activity android:name="com.madcourse.edu.neu.madcourse.mathters.CategoryActivity" />
-        <activity android:name="com.madcourse.edu.neu.madcourse.mathters.SplashActivity">
+        <activity android:name="edu.neu.madcourse.mathters.ScoreActivity"></activity>
+        <activity android:name="edu.neu.madcourse.mathters.QuestionActivity" />
+        <activity android:name="edu.neu.madcourse.mathters.SetsActivity" />
+        <activity android:name="edu.neu.madcourse.mathters.CategoryActivity" />
+        <activity android:name="edu.neu.madcourse.mathters.SplashActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.madcourse.edu.neu.madcourse.mathters.MainActivity">
+        <activity android:name="edu.neu.madcourse.mathters.MainActivity">
         </activity>
     </application>
 
