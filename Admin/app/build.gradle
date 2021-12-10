@@ -1,14 +1,6 @@
 apply plugin: 'com.android.application'
 
 android {
-    signingConfigs {
-        release {
-            storeFile file('/Users/fangwenrui/AndroidStudioProjects/5520/WFKeystore/WFKeystore')
-            storePassword '123456'
-            keyAlias 'admin'
-            keyPassword '123456'
-        }
-    }
     compileSdkVersion 31
     defaultConfig {
         applicationId "edu.neu.madcourse.admin"
@@ -17,7 +9,6 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-        signingConfig signingConfigs.release
     }
     buildTypes {
         release {

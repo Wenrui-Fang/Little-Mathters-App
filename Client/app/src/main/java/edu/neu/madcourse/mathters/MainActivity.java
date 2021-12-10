@@ -1,19 +1,30 @@
 package edu.neu.madcourse.mathters;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
 
 import android.os.Bundle;
+
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
 
 import mathters.R;
 
 public class MainActivity extends AppCompatActivity {
-    private TextView title;
+
+    private TextView title, totalCountView, consecutiveCountView;
     private Button start;
 
     @Override
@@ -23,6 +34,8 @@ public class MainActivity extends AppCompatActivity {
 
         title = findViewById(R.id.main_title);
         start = findViewById(R.id.ma_startB);
+        totalCountView = findViewById(R.id.totalCount);
+        consecutiveCountView = findViewById(R.id.consecutiveCount);
 
         Typeface typeface = ResourcesCompat.getFont(this, R.font.blacklist);
         title.setTypeface(typeface);
@@ -35,5 +48,51 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
+
+
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        Calendar calendar = Calendar.getInstance();
+
+        Date now = new Date();
+        String todayDate = df.format(now);
+
+        calendar.add(Calendar.DATE, -1);
+        String yesterdayDate = df.format(calendar.getTime());
+
+
+        SharedPreferences preferences = getSharedPreferences("PREFS", 0);
+        String today = preferences.getString("todayDate", todayDate);
+        String yesterday = preferences.getString("yesterdayDate", yesterdayDate);
+        String lastLoginDate = preferences.getString("lastLoginDate", "1980-01-01");
+        SharedPreferences.Editor editor = preferences.edit();
+        int totalCount = preferences.getInt("totalCount", 0);
+        int consecutiveCount = preferences.getInt("consecutiveCount", 0);
+
+
+
+        if (!today.equals(lastLoginDate) && !yesterday.equals(lastLoginDate)) {
+            Toast.makeText(this, "Daily reward!", Toast.LENGTH_SHORT).show();
+            editor.putString("lastLoginDate", today);
+            editor.putInt("consecutiveCount", 1);
+            editor.putInt("totalCount", totalCount + 1);
+            editor.apply();
+            totalCountView.setText("Total hardwork days: " + preferences.getInt("totalCount", 0));
+            consecutiveCountView.setText("Consecutive study days: " + preferences.getInt("consecutiveCount", 0));
+
+        } else if (!today.equals(lastLoginDate) && yesterday.equals(lastLoginDate)) {
+            Toast.makeText(this, "Daily reward!", Toast.LENGTH_SHORT).show();
+            editor.putString("lastLoginDate", today);
+            editor.putInt("consecutiveCount", consecutiveCount + 1);
+            editor.putInt("totalCount", totalCount + 1);
+            editor.apply();
+            totalCountView.setText("Total hardwork days: " + preferences.getInt("totalCount", 0));
+            consecutiveCountView.setText("Consecutive study days: " + preferences.getInt("consecutiveCount", 0));
+
+        } else {
+            Toast.makeText(this, "Nice to see you back again!", Toast.LENGTH_SHORT).show();
+            totalCountView.setText("Total hardwork days: " + preferences.getInt("totalCount", 0));
+            consecutiveCountView.setText("Consecutive study days: " + preferences.getInt("consecutiveCount", 0));
+        }
     }
 }

@@ -43,7 +43,6 @@ import static edu.neu.madcourse.mathters.SetsActivity.setsIDs;
 import mathters.R;
 
 public class QuestionActivity extends AppCompatActivity implements View.OnClickListener {
-
     private TextView question, qCount, timer;
     private Button option1, option2, option3, option4;
     private List<Question> questionList;
@@ -88,11 +87,13 @@ public class QuestionActivity extends AppCompatActivity implements View.OnClickL
         loadingDialog.setCancelable(false);
         loadingDialog.getWindow().setBackgroundDrawableResource(R.drawable.progress_background);
         loadingDialog.getWindow().setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
         loadingDialog.show();
 
         questionList = new ArrayList<>();
 
         setNo = getIntent().getIntExtra("SETNO", 1);
+
         firestore = FirebaseFirestore.getInstance();
 
         getQuestionsList();
@@ -128,6 +129,7 @@ public class QuestionActivity extends AppCompatActivity implements View.OnClickL
                         for (int i = 0; i < Integer.valueOf(count); i++) {
                             String quesID = quesListDoc.getString("Q" + String.valueOf(i + 1) + "_ID");
 
+
                             QueryDocumentSnapshot quesDoc = docList.get(quesID);
 
                             questionList.add(new Question(
@@ -151,6 +153,7 @@ public class QuestionActivity extends AppCompatActivity implements View.OnClickL
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         Toast.makeText(QuestionActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+
                         loadingDialog.dismiss();
                     }
                 });
@@ -192,7 +195,6 @@ public class QuestionActivity extends AppCompatActivity implements View.OnClickL
         countDown.start();
 
     }
-
 
     @Override
     public void onClick(View v) {
@@ -260,8 +262,6 @@ public class QuestionActivity extends AppCompatActivity implements View.OnClickL
                 changeQuestion();
             }
         }, 2000);
-
-
     }
 
     private void changeQuestion() {
@@ -292,7 +292,6 @@ public class QuestionActivity extends AppCompatActivity implements View.OnClickL
 
 
     private void playAnim(final View view, final int value, final int viewNum) {
-
         view.animate().alpha(value).scaleX(value).scaleY(value).setDuration(500)
                 .setStartDelay(100).setInterpolator(new DecelerateInterpolator())
                 .setListener(new Animator.AnimatorListener() {
@@ -331,7 +330,6 @@ public class QuestionActivity extends AppCompatActivity implements View.OnClickL
                             playAnim(view, 1, viewNum);
 
                         }
-
                     }
 
                     @Override
@@ -353,7 +351,6 @@ public class QuestionActivity extends AppCompatActivity implements View.OnClickL
 
         countDown.cancel();
     }
-
 
     @Override
     protected void onResume() {
@@ -425,24 +422,3 @@ public class QuestionActivity extends AppCompatActivity implements View.OnClickL
         vibrator.vibrate(milliseconds);
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
