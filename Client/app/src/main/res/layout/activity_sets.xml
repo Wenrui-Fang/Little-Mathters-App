@@ -36,5 +36,4 @@
         android:columnWidth="100dp"
         android:numColumns="auto_fit"
         ></GridView>
-
 </LinearLayout>
