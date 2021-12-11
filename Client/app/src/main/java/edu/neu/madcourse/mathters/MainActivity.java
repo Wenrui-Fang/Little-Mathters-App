@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
 
 import android.os.Bundle;
+
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -18,9 +19,11 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+
 import mathters.R;
 
 public class MainActivity extends AppCompatActivity {
+
     private TextView title, totalCountView, consecutiveCountView;
     private Button start;
 
@@ -34,8 +37,6 @@ public class MainActivity extends AppCompatActivity {
         totalCountView = findViewById(R.id.totalCount);
         consecutiveCountView = findViewById(R.id.consecutiveCount);
 
-
-
         Typeface typeface = ResourcesCompat.getFont(this, R.font.blacklist);
         title.setTypeface(typeface);
 
@@ -47,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
 
 
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
@@ -92,6 +94,5 @@ public class MainActivity extends AppCompatActivity {
             totalCountView.setText("Total hardwork days: " + preferences.getInt("totalCount", 0));
             consecutiveCountView.setText("Consecutive study days: " + preferences.getInt("consecutiveCount", 0));
         }
-
     }
 }
