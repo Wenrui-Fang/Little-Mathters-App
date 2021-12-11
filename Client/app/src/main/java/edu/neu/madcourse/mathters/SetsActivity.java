@@ -3,6 +3,8 @@ package edu.neu.madcourse.mathters;
 import android.app.Dialog;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -99,5 +101,11 @@ public class SetsActivity extends AppCompatActivity {
             SetsActivity.this.finish();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(SetsActivity.this, CategoryActivity.class);
+        startActivity(intent);
     }
 }

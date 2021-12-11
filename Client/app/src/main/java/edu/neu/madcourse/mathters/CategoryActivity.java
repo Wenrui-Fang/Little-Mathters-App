@@ -1,6 +1,7 @@
 package edu.neu.madcourse.mathters;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import android.view.MenuItem;
@@ -46,5 +47,11 @@ public class CategoryActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(CategoryActivity.this, MainActivity.class);
+        startActivity(intent);
     }
 }

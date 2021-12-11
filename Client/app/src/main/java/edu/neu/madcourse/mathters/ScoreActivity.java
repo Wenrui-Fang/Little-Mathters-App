@@ -63,12 +63,17 @@ public class ScoreActivity extends AppCompatActivity {
                     }
                 });
 
-                Intent intent = new Intent(ScoreActivity.this, MainActivity.class);
+                Intent intent = new Intent(ScoreActivity.this, SetsActivity.class);
 
                 ScoreActivity.this.startActivity(intent);
                 ScoreActivity.this.finish();
             }
         });
 
+    }
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(ScoreActivity.this, SetsActivity.class);
+        startActivity(intent);
     }
 }

@@ -91,9 +91,14 @@ public class MainActivity extends AppCompatActivity {
             consecutiveCountView.setText("Consecutive study days: " + preferences.getInt("consecutiveCount", 0));
 
         } else {
-            Toast.makeText(this, "Nice to see you back again!", Toast.LENGTH_SHORT).show();
             totalCountView.setText("Total hardwork days: " + preferences.getInt("totalCount", 0));
             consecutiveCountView.setText("Consecutive study days: " + preferences.getInt("consecutiveCount", 0));
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(MainActivity.this, StartMenu.class);
+        startActivity(intent);
     }
 }
