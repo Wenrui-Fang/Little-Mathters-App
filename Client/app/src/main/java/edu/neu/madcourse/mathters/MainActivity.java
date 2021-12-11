@@ -5,27 +5,22 @@ import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
-
 import android.os.Bundle;
-
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-
-
 import mathters.R;
 
 public class MainActivity extends AppCompatActivity {
-
     private TextView title, totalCountView, consecutiveCountView;
     private Button start;
+    private Button history;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
 
         title = findViewById(R.id.main_title);
         start = findViewById(R.id.ma_startB);
+        history = findViewById(R.id.historyButton);
         totalCountView = findViewById(R.id.totalCount);
         consecutiveCountView = findViewById(R.id.consecutiveCount);
 
@@ -49,8 +45,13 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
-
+        history.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, QuizHistory.class);
+                startActivity(intent);
+            }
+        });
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
         Calendar calendar = Calendar.getInstance();
 
@@ -90,9 +91,14 @@ public class MainActivity extends AppCompatActivity {
             consecutiveCountView.setText("Consecutive study days: " + preferences.getInt("consecutiveCount", 0));
 
         } else {
-            Toast.makeText(this, "Nice to see you back again!", Toast.LENGTH_SHORT).show();
             totalCountView.setText("Total hardwork days: " + preferences.getInt("totalCount", 0));
             consecutiveCountView.setText("Consecutive study days: " + preferences.getInt("consecutiveCount", 0));
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(MainActivity.this, StartMenu.class);
+        startActivity(intent);
     }
 }

@@ -12,14 +12,15 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.CountDownTimer;
 import android.os.Handler;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
 import android.os.Vibrator;
+import android.provider.MediaStore;
 import android.util.ArrayMap;
 import android.view.View;
 import android.view.ViewGroup;
@@ -52,6 +53,7 @@ public class QuestionActivity extends AppCompatActivity implements View.OnClickL
     private FirebaseFirestore firestore;
     private int setNo;
     private Dialog loadingDialog;
+
     /**
      * Sensor
      */
@@ -62,7 +64,7 @@ public class QuestionActivity extends AppCompatActivity implements View.OnClickL
      * Judge one shake at a time
      */
     private boolean isShake = false;
-
+    private boolean isClicked = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -87,24 +89,20 @@ public class QuestionActivity extends AppCompatActivity implements View.OnClickL
         loadingDialog.setCancelable(false);
         loadingDialog.getWindow().setBackgroundDrawableResource(R.drawable.progress_background);
         loadingDialog.getWindow().setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-
         loadingDialog.show();
 
         questionList = new ArrayList<>();
 
-        setNo = getIntent().getIntExtra("SETNO", 1);
-
+        setNo = getIntent().getIntExtra("SETNO",1);
+        UserDetails.level = String.valueOf(setNo+1);
         firestore = FirebaseFirestore.getInstance();
-
         getQuestionsList();
-
         score = 0;
+
 
         // Sensor Manager
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         shakeListener = new ShakeSensorListener();
-
-
     }
 
     private void getQuestionsList() {
@@ -117,7 +115,6 @@ public class QuestionActivity extends AppCompatActivity implements View.OnClickL
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
 
                         Map<String, QueryDocumentSnapshot> docList = new ArrayMap<>();
-
                         for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
                             docList.put(doc.getId(), doc);
                         }
@@ -128,8 +125,6 @@ public class QuestionActivity extends AppCompatActivity implements View.OnClickL
 
                         for (int i = 0; i < Integer.valueOf(count); i++) {
                             String quesID = quesListDoc.getString("Q" + String.valueOf(i + 1) + "_ID");
-
-
                             QueryDocumentSnapshot quesDoc = docList.get(quesID);
 
                             questionList.add(new Question(
@@ -152,13 +147,14 @@ public class QuestionActivity extends AppCompatActivity implements View.OnClickL
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(QuestionActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
 
+                        Toast.makeText(QuestionActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                         loadingDialog.dismiss();
                     }
                 });
 
     }
+
 
     private void setQuestion() {
         timer.setText(String.valueOf(10));
@@ -177,6 +173,7 @@ public class QuestionActivity extends AppCompatActivity implements View.OnClickL
         quesNum = 0;
 
     }
+
 
     private void startTimer() {
         countDown = new CountDownTimer(12000, 1000) {
@@ -198,8 +195,13 @@ public class QuestionActivity extends AppCompatActivity implements View.OnClickL
 
     @Override
     public void onClick(View v) {
-
+        if(isShake) {
+            // When the user is shaking the phone, he/she cannot choose an option.
+            return;
+        }
+        isClicked = true;
         int selectedOption = 0;
+
 
         switch (v.getId()) {
             case R.id.option1:
@@ -223,7 +225,13 @@ public class QuestionActivity extends AppCompatActivity implements View.OnClickL
 
         countDown.cancel();
         checkAnswer(selectedOption, v);
-
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                isClicked = false;
+            }
+        }, 2000);
     }
 
     private void checkAnswer(int selectedOption, View view) {
@@ -232,7 +240,7 @@ public class QuestionActivity extends AppCompatActivity implements View.OnClickL
             //Right Answer
             ((Button) view).setBackgroundTintList(ColorStateList.valueOf(Color.GREEN));
             score++;
-
+            playSound(QuestionActivity.this, R.raw.right_sound);
         } else {
             //Wrong Answer
             ((Button) view).setBackgroundTintList(ColorStateList.valueOf(Color.RED));
@@ -250,9 +258,8 @@ public class QuestionActivity extends AppCompatActivity implements View.OnClickL
                 case 4:
                     option4.setBackgroundTintList(ColorStateList.valueOf(Color.GREEN));
                     break;
-
             }
-
+            playSound(QuestionActivity.this, R.raw.wrong_sound);
         }
 
         Handler handler = new Handler();
@@ -284,11 +291,11 @@ public class QuestionActivity extends AppCompatActivity implements View.OnClickL
             intent.putExtra("SCORE", String.valueOf(score) + "/" + String.valueOf(questionList.size()));
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
-            //QuestionActivity.this.finish();
+            QuestionActivity.this.finish();
         }
-
-
+//        isClicked = false;
     }
+
 
 
     private void playAnim(final View view, final int value, final int viewNum) {
@@ -374,7 +381,8 @@ public class QuestionActivity extends AppCompatActivity implements View.OnClickL
         @Override
         public void onSensorChanged(SensorEvent event) {
             // Avoid shaking all the time
-            if (isShake) {
+            // When the user is choosing an option, he/she cannot shaking the phone.
+            if (isShake || isClicked) {
                 return;
             }
             float[] values = event.values;
@@ -387,10 +395,10 @@ public class QuestionActivity extends AppCompatActivity implements View.OnClickL
             float y = Math.abs(values[1]);
             float z = Math.abs(values[2]);
             // When acceleration exceeds 25, shake successfully
-            if (x > 25 || y > 25 || z > 25) {
+            if (x > 10 || y > 10 || z > 10) {
                 isShake = true;
                 // Play sound
-                playSound(QuestionActivity.this);
+                playSound(QuestionActivity.this, R.raw.shake_sound);
                 // Vibrate, pay attention to permissions in AndroidManifest.xml
                 vibrate(500);
                 // Imitate network delay operation, here you can go to the server...
@@ -412,8 +420,8 @@ public class QuestionActivity extends AppCompatActivity implements View.OnClickL
         }
     }
 
-    private void playSound(Context context) {
-        MediaPlayer player = MediaPlayer.create(context, R.raw.shake_sound);
+    private void playSound(Context context, int sound) {
+        MediaPlayer player = MediaPlayer.create(context, sound);
         player.start();
     }
 
