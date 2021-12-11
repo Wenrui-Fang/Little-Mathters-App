@@ -238,6 +238,7 @@ public class QuestionActivity extends AppCompatActivity implements View.OnClickL
             //Right Answer
             ((Button) view).setBackgroundTintList(ColorStateList.valueOf(Color.GREEN));
             score++;
+            playSound(QuestionActivity.this);
         } else {
             //Wrong Answer
             ((Button) view).setBackgroundTintList(ColorStateList.valueOf(Color.RED));
@@ -255,9 +256,8 @@ public class QuestionActivity extends AppCompatActivity implements View.OnClickL
                 case 4:
                     option4.setBackgroundTintList(ColorStateList.valueOf(Color.GREEN));
                     break;
-
             }
-
+            playSound(QuestionActivity.this);
         }
 
         Handler handler = new Handler();
