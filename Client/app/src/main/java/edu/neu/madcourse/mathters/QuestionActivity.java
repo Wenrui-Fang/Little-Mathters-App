@@ -12,6 +12,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.CountDownTimer;
 import android.os.Handler;
 
@@ -19,6 +20,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.os.Vibrator;
+import android.provider.MediaStore;
 import android.util.ArrayMap;
 import android.view.View;
 import android.view.ViewGroup;
@@ -62,6 +64,7 @@ public class QuestionActivity extends AppCompatActivity implements View.OnClickL
      * Judge one shake at a time
      */
     private boolean isShake = false;
+    private boolean isClicked = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -192,7 +195,11 @@ public class QuestionActivity extends AppCompatActivity implements View.OnClickL
 
     @Override
     public void onClick(View v) {
-
+        if(isShake) {
+            // When the user is shaking the phone, he/she cannot choose an option.
+            return;
+        }
+        isClicked = true;
         int selectedOption = 0;
 
 
@@ -218,7 +225,13 @@ public class QuestionActivity extends AppCompatActivity implements View.OnClickL
 
         countDown.cancel();
         checkAnswer(selectedOption, v);
-
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                isClicked = false;
+            }
+        }, 2000);
     }
 
     private void checkAnswer(int selectedOption, View view) {
@@ -227,6 +240,7 @@ public class QuestionActivity extends AppCompatActivity implements View.OnClickL
             //Right Answer
             ((Button) view).setBackgroundTintList(ColorStateList.valueOf(Color.GREEN));
             score++;
+            playSound(QuestionActivity.this, R.raw.right_sound);
         } else {
             //Wrong Answer
             ((Button) view).setBackgroundTintList(ColorStateList.valueOf(Color.RED));
@@ -244,9 +258,8 @@ public class QuestionActivity extends AppCompatActivity implements View.OnClickL
                 case 4:
                     option4.setBackgroundTintList(ColorStateList.valueOf(Color.GREEN));
                     break;
-
             }
-
+            playSound(QuestionActivity.this, R.raw.wrong_sound);
         }
 
         Handler handler = new Handler();
@@ -280,8 +293,7 @@ public class QuestionActivity extends AppCompatActivity implements View.OnClickL
             startActivity(intent);
             //QuestionActivity.this.finish();
         }
-
-
+//        isClicked = false;
     }
 
 
@@ -369,7 +381,8 @@ public class QuestionActivity extends AppCompatActivity implements View.OnClickL
         @Override
         public void onSensorChanged(SensorEvent event) {
             // Avoid shaking all the time
-            if (isShake) {
+            // When the user is choosing an option, he/she cannot shaking the phone.
+            if (isShake || isClicked) {
                 return;
             }
             float[] values = event.values;
@@ -382,10 +395,10 @@ public class QuestionActivity extends AppCompatActivity implements View.OnClickL
             float y = Math.abs(values[1]);
             float z = Math.abs(values[2]);
             // When acceleration exceeds 25, shake successfully
-            if (x > 25 || y > 25 || z > 25) {
+            if (x > 10 || y > 10 || z > 10) {
                 isShake = true;
                 // Play sound
-                playSound(QuestionActivity.this);
+                playSound(QuestionActivity.this, R.raw.shake_sound);
                 // Vibrate, pay attention to permissions in AndroidManifest.xml
                 vibrate(500);
                 // Imitate network delay operation, here you can go to the server...
@@ -407,8 +420,8 @@ public class QuestionActivity extends AppCompatActivity implements View.OnClickL
         }
     }
 
-    private void playSound(Context context) {
-        MediaPlayer player = MediaPlayer.create(context, R.raw.shake_sound);
+    private void playSound(Context context, int sound) {
+        MediaPlayer player = MediaPlayer.create(context, sound);
         player.start();
     }
 
