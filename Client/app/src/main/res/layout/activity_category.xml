@@ -26,6 +26,5 @@
         android:background="@drawable/border"
         android:columnWidth="100dp"
         android:gravity="center"
-        android:numColumns="1" />
-
+        android:numColumns="1"></GridView>
 </LinearLayout>
