@@ -57,6 +57,19 @@ public class CatGridAdapter extends BaseAdapter {
             public void onClick(View v) {
 
                 SplashActivity.selected_cat_index = position;
+
+//                switch (position) {
+//                    case 0:
+//                        UserDetails.category = "3~6 years old";
+//                        break;
+//                    case 1:
+//                        UserDetails.category = "6~9 years old";
+//                        break;
+//                    case 2:
+//                        UserDetails.category = "9~12 years old";
+//                        break;
+//
+//                }
                 UserDetails.category = String.valueOf(position+1);
                 Intent intent = new Intent(parent.getContext(),SetsActivity.class);
                 parent.getContext().startActivity(intent);

@@ -63,7 +63,7 @@ public class ScoreActivity extends AppCompatActivity {
                     }
                 });
 
-                Intent intent = new Intent(ScoreActivity.this,SetsActivity.class);
+                Intent intent = new Intent(ScoreActivity.this, MainActivity.class);
 
                 ScoreActivity.this.startActivity(intent);
                 ScoreActivity.this.finish();
