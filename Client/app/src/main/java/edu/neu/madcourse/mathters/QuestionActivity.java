@@ -62,6 +62,7 @@ public class QuestionActivity extends AppCompatActivity implements View.OnClickL
      * Judge one shake at a time
      */
     private boolean isShake = false;
+    private boolean isClicked = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -192,7 +193,11 @@ public class QuestionActivity extends AppCompatActivity implements View.OnClickL
 
     @Override
     public void onClick(View v) {
-
+        if(isShake) {
+            // When the user is shaking the phone, he/she cannot choose an option.
+            return;
+        }
+        isClicked = true;
         int selectedOption = 0;
 
 
@@ -218,7 +223,13 @@ public class QuestionActivity extends AppCompatActivity implements View.OnClickL
 
         countDown.cancel();
         checkAnswer(selectedOption, v);
-
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                isClicked = false;
+            }
+        }, 2000);
     }
 
     private void checkAnswer(int selectedOption, View view) {
@@ -280,8 +291,7 @@ public class QuestionActivity extends AppCompatActivity implements View.OnClickL
             startActivity(intent);
             //QuestionActivity.this.finish();
         }
-
-
+//        isClicked = false;
     }
 
 
@@ -369,7 +379,8 @@ public class QuestionActivity extends AppCompatActivity implements View.OnClickL
         @Override
         public void onSensorChanged(SensorEvent event) {
             // Avoid shaking all the time
-            if (isShake) {
+            // When the user is choosing an option, he/she cannot shaking the phone.
+            if (isShake || isClicked) {
                 return;
             }
             float[] values = event.values;
