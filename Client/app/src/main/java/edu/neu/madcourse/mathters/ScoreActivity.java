@@ -2,25 +2,21 @@ package edu.neu.madcourse.mathters;
 
 import android.content.Intent;
 import android.os.Bundle;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-
 import mathters.R;
 
 public class ScoreActivity extends AppCompatActivity {
@@ -40,8 +36,6 @@ public class ScoreActivity extends AppCompatActivity {
         String score_str = getIntent().getStringExtra("SCORE");
         score.setText(score_str);
         UserDetails.userscore = score_str;
-
-
         done.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -70,10 +64,9 @@ public class ScoreActivity extends AppCompatActivity {
                 });
 
                 Intent intent = new Intent(ScoreActivity.this,SetsActivity.class);
+
                 ScoreActivity.this.startActivity(intent);
                 ScoreActivity.this.finish();
-
-
             }
         });
 

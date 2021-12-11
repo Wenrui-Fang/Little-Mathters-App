@@ -2,15 +2,23 @@ package edu.neu.madcourse.mathters;
 
 import android.animation.Animator;
 import android.app.Dialog;
+import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
+import android.media.MediaPlayer;
 import android.os.CountDownTimer;
 import android.os.Handler;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.util.ArrayMap;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,8 +41,7 @@ import static edu.neu.madcourse.mathters.SetsActivity.setsIDs;
 
 import mathters.R;
 
-public class QuestionActivity extends AppCompatActivity implements View.OnClickListener{
-
+public class QuestionActivity extends AppCompatActivity implements View.OnClickListener {
     private TextView question, qCount, timer;
     private Button option1, option2, option3, option4;
     private List<Question> questionList;
@@ -45,6 +52,16 @@ public class QuestionActivity extends AppCompatActivity implements View.OnClickL
     private int setNo;
     private Dialog loadingDialog;
 
+    /**
+     * Sensor
+     */
+    private SensorManager sensorManager;
+    private ShakeSensorListener shakeListener;
+
+    /**
+     * Judge one shake at a time
+     */
+    private boolean isShake = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,7 +85,7 @@ public class QuestionActivity extends AppCompatActivity implements View.OnClickL
         loadingDialog.setContentView(R.layout.loading_progressbar);
         loadingDialog.setCancelable(false);
         loadingDialog.getWindow().setBackgroundDrawableResource(R.drawable.progress_background);
-        loadingDialog.getWindow().setLayout(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT);
+        loadingDialog.getWindow().setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         loadingDialog.show();
 
         questionList = new ArrayList<>();
@@ -76,15 +93,16 @@ public class QuestionActivity extends AppCompatActivity implements View.OnClickL
         setNo = getIntent().getIntExtra("SETNO",1);
         UserDetails.level = String.valueOf(setNo+1);
         firestore = FirebaseFirestore.getInstance();
-
         getQuestionsList();
-
         score = 0;
 
+
+        // Sensor Manager
+        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        shakeListener = new ShakeSensorListener();
     }
 
-    private void getQuestionsList()
-    {
+    private void getQuestionsList() {
         questionList.clear();
 
         firestore.collection("QUIZ").document(SplashActivity.catList.get(SplashActivity.selected_cat_index).getId())
@@ -94,20 +112,16 @@ public class QuestionActivity extends AppCompatActivity implements View.OnClickL
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
 
                         Map<String, QueryDocumentSnapshot> docList = new ArrayMap<>();
-
-                        for(QueryDocumentSnapshot doc : queryDocumentSnapshots)
-                        {
-                            docList.put(doc.getId(),doc);
+                        for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+                            docList.put(doc.getId(), doc);
                         }
 
-                        QueryDocumentSnapshot quesListDoc  = docList.get("QUESTIONS_LIST");
+                        QueryDocumentSnapshot quesListDoc = docList.get("QUESTIONS_LIST");
 
                         String count = quesListDoc.getString("COUNT");
 
-                        for(int i=0; i < Integer.valueOf(count); i++)
-                        {
-                            String quesID = quesListDoc.getString("Q" + String.valueOf(i+1) + "_ID");
-
+                        for (int i = 0; i < Integer.valueOf(count); i++) {
+                            String quesID = quesListDoc.getString("Q" + String.valueOf(i + 1) + "_ID");
                             QueryDocumentSnapshot quesDoc = docList.get(quesID);
 
                             questionList.add(new Question(
@@ -130,15 +144,16 @@ public class QuestionActivity extends AppCompatActivity implements View.OnClickL
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(QuestionActivity.this,e.getMessage(),Toast.LENGTH_SHORT).show();
+
+                        Toast.makeText(QuestionActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                         loadingDialog.dismiss();
                     }
                 });
 
     }
 
-    private void setQuestion()
-    {
+
+    private void setQuestion() {
         timer.setText(String.valueOf(10));
 
         question.setText(questionList.get(0).getQuestion());
@@ -156,18 +171,18 @@ public class QuestionActivity extends AppCompatActivity implements View.OnClickL
 
     }
 
-    private void startTimer()
-    {
-         countDown = new CountDownTimer(12000, 1000) {
+
+    private void startTimer() {
+        countDown = new CountDownTimer(12000, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
-                if(millisUntilFinished < 10000)
+                if (millisUntilFinished < 10000)
                     timer.setText(String.valueOf(millisUntilFinished / 1000));
             }
 
             @Override
             public void onFinish() {
-                    changeQuestion();
+                changeQuestion();
             }
         };
 
@@ -175,19 +190,14 @@ public class QuestionActivity extends AppCompatActivity implements View.OnClickL
 
     }
 
-
-
-
-
-
     @Override
     public void onClick(View v) {
 
         int selectedOption = 0;
 
-        switch (v.getId())
-        {
-            case R.id.option1 :
+
+        switch (v.getId()) {
+            case R.id.option1:
                 selectedOption = 1;
                 break;
 
@@ -211,23 +221,17 @@ public class QuestionActivity extends AppCompatActivity implements View.OnClickL
 
     }
 
-    private void checkAnswer(int selectedOption, View view)
-    {
+    private void checkAnswer(int selectedOption, View view) {
 
-        if(selectedOption == questionList.get(quesNum).getCorrectAns())
-        {
+        if (selectedOption == questionList.get(quesNum).getCorrectAns()) {
             //Right Answer
-            ((Button)view).setBackgroundTintList(ColorStateList.valueOf(Color.GREEN));
+            ((Button) view).setBackgroundTintList(ColorStateList.valueOf(Color.GREEN));
             score++;
-
-        }
-        else
-        {
+        } else {
             //Wrong Answer
-            ((Button)view).setBackgroundTintList(ColorStateList.valueOf(Color.RED));
+            ((Button) view).setBackgroundTintList(ColorStateList.valueOf(Color.RED));
 
-            switch (questionList.get(quesNum).getCorrectAns())
-            {
+            switch (questionList.get(quesNum).getCorrectAns()) {
                 case 1:
                     option1.setBackgroundTintList(ColorStateList.valueOf(Color.GREEN));
                     break;
@@ -252,34 +256,25 @@ public class QuestionActivity extends AppCompatActivity implements View.OnClickL
                 changeQuestion();
             }
         }, 2000);
-
-
-
     }
 
-
-    private void changeQuestion()
-    {
-        if( quesNum < questionList.size() - 1)
-        {
+    private void changeQuestion() {
+        if (quesNum < questionList.size() - 1) {
             quesNum++;
 
-            playAnim(question,0,0);
-            playAnim(option1,0,1);
-            playAnim(option2,0,2);
-            playAnim(option3,0,3);
-            playAnim(option4,0,4);
+            playAnim(question, 0, 0);
+            playAnim(option1, 0, 1);
+            playAnim(option2, 0, 2);
+            playAnim(option3, 0, 3);
+            playAnim(option4, 0, 4);
 
-            qCount.setText(String.valueOf(quesNum+1) + "/" + String.valueOf(questionList.size()));
-
+            qCount.setText(String.valueOf(quesNum + 1) + "/" + String.valueOf(questionList.size()));
             timer.setText(String.valueOf(10));
             startTimer();
 
-        }
-        else
-        {
+        } else {
             // Go to Score Activity
-            Intent intent = new Intent(QuestionActivity.this,ScoreActivity.class);
+            Intent intent = new Intent(QuestionActivity.this, ScoreActivity.class);
             intent.putExtra("SCORE", String.valueOf(score) + "/" + String.valueOf(questionList.size()));
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
@@ -290,9 +285,8 @@ public class QuestionActivity extends AppCompatActivity implements View.OnClickL
     }
 
 
-    private void playAnim(final View view, final int value, final int viewNum)
-    {
 
+    private void playAnim(final View view, final int value, final int viewNum) {
         view.animate().alpha(value).scaleX(value).scaleY(value).setDuration(500)
                 .setStartDelay(100).setInterpolator(new DecelerateInterpolator())
                 .setListener(new Animator.AnimatorListener() {
@@ -303,37 +297,34 @@ public class QuestionActivity extends AppCompatActivity implements View.OnClickL
 
                     @Override
                     public void onAnimationEnd(Animator animation) {
-                            if(value == 0)
-                            {
-                                switch (viewNum)
-                                {
-                                    case 0:
-                                        ((TextView)view).setText(questionList.get(quesNum).getQuestion());
-                                        break;
-                                    case 1:
-                                        ((Button)view).setText(questionList.get(quesNum).getOptionA());
-                                        break;
-                                    case 2:
-                                        ((Button)view).setText(questionList.get(quesNum).getOptionB());
-                                        break;
-                                    case 3:
-                                        ((Button)view).setText(questionList.get(quesNum).getOptionC());
-                                        break;
-                                    case 4:
-                                        ((Button)view).setText(questionList.get(quesNum).getOptionD());
-                                        break;
-
-                                }
-
-
-                                if(viewNum != 0)
-                                    ((Button)view).setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#E99C03")));
-
-
-                                playAnim(view,1,viewNum);
+                        if (value == 0) {
+                            switch (viewNum) {
+                                case 0:
+                                    ((TextView) view).setText(questionList.get(quesNum).getQuestion());
+                                    break;
+                                case 1:
+                                    ((Button) view).setText(questionList.get(quesNum).getOptionA());
+                                    break;
+                                case 2:
+                                    ((Button) view).setText(questionList.get(quesNum).getOptionB());
+                                    break;
+                                case 3:
+                                    ((Button) view).setText(questionList.get(quesNum).getOptionC());
+                                    break;
+                                case 4:
+                                    ((Button) view).setText(questionList.get(quesNum).getOptionD());
+                                    break;
 
                             }
 
+
+                            if (viewNum != 0)
+                                ((Button) view).setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#E99C03")));
+
+
+                            playAnim(view, 1, viewNum);
+
+                        }
                     }
 
                     @Override
@@ -355,25 +346,74 @@ public class QuestionActivity extends AppCompatActivity implements View.OnClickL
 
         countDown.cancel();
     }
+
+    @Override
+    protected void onResume() {
+        // Register the accelerometer sensor
+        sensorManager.registerListener(shakeListener, sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
+                SensorManager.SENSOR_DELAY_FASTEST);
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        /**
+         * Cancel register
+         */
+        sensorManager.unregisterListener(shakeListener);
+        super.onPause();
+    }
+
+    private class ShakeSensorListener implements SensorEventListener {
+
+        @Override
+        public void onSensorChanged(SensorEvent event) {
+            // Avoid shaking all the time
+            if (isShake) {
+                return;
+            }
+            float[] values = event.values;
+            /*
+             * x : Acceleration of gravity in the x-axis direction, positive to the right
+             * y : Acceleration of gravity in the y-axis direction, forward is positive
+             * z : Acceleration of gravity in the z-axis direction, up is positive
+             */
+            float x = Math.abs(values[0]);
+            float y = Math.abs(values[1]);
+            float z = Math.abs(values[2]);
+            // When acceleration exceeds 25, shake successfully
+            if (x > 25 || y > 25 || z > 25) {
+                isShake = true;
+                // Play sound
+                playSound(QuestionActivity.this);
+                // Vibrate, pay attention to permissions in AndroidManifest.xml
+                vibrate(500);
+                // Imitate network delay operation, here you can go to the server...
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        // Cancel the countdown of the previous question
+                        countDown.cancel();
+                        // When shake, change to the next question.
+                        changeQuestion();
+                        isShake = false;
+                    }
+                }, 1000);
+            }
+        }
+
+        @Override
+        public void onAccuracyChanged(Sensor sensor, int accuracy) {
+        }
+    }
+
+    private void playSound(Context context) {
+        MediaPlayer player = MediaPlayer.create(context, R.raw.shake_sound);
+        player.start();
+    }
+
+    private void vibrate(long milliseconds) {
+        Vibrator vibrator = (Vibrator) getSystemService(Service.VIBRATOR_SERVICE);
+        vibrator.vibrate(milliseconds);
+    }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

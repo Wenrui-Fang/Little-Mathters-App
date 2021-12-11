@@ -57,8 +57,6 @@ public class SplashActivity extends AppCompatActivity {
                 }
 
                 loadData();
-
-
             }
         }.start();
 

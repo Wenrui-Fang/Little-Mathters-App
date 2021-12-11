@@ -13,8 +13,8 @@
         android:layout_height="?attr/actionBarSize"
         android:background="@color/colorPrimary"
         android:theme="@style/ThemeOverlay.AppCompat.Dark"
-
         ></androidx.appcompat.widget.Toolbar>
+
 
     <TextView
         android:layout_width="match_parent"
@@ -36,6 +36,4 @@
         android:columnWidth="100dp"
         android:numColumns="auto_fit"
         ></GridView>
-
-
 </LinearLayout>
