@@ -11,6 +11,7 @@
     android:paddingTop="16dp"
     android:orientation="vertical"
     android:gravity="center"
+    android:background="@drawable/main_background"
     tools:context="edu.neu.madcourse.mathters.LoginActivity">
 
   <TextView
@@ -61,6 +62,7 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:text="Register"
+      android:background="@drawable/round_corner"
       android:id="@+id/registerButton"
       android:layout_marginBottom="20dp"/>
 

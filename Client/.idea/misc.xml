@@ -4,14 +4,16 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Users/XmYoung/Desktop/clientapp/mathters/app/src/main/res/layout/activity_category.xml" value="0.1793478260869565" />
-        <entry key="..\:/Users/XmYoung/Desktop/clientapp/mathters/app/src/main/res/layout/activity_login.xml" value="0.12335359675785208" />
+        <entry key="..\:/Users/XmYoung/Desktop/clientapp/mathters/app/src/main/res/layout/activity_login.xml" value="0.264" />
         <entry key="..\:/Users/XmYoung/Desktop/clientapp/mathters/app/src/main/res/layout/activity_main.xml" value="0.1793478260869565" />
         <entry key="..\:/Users/XmYoung/Desktop/clientapp/mathters/app/src/main/res/layout/activity_question.xml" value="0.1793478260869565" />
-        <entry key="..\:/Users/XmYoung/Desktop/clientapp/mathters/app/src/main/res/layout/activity_register.xml" value="0.1296875" />
+        <entry key="..\:/Users/XmYoung/Desktop/clientapp/mathters/app/src/main/res/layout/activity_register.xml" value="0.176" />
         <entry key="..\:/Users/XmYoung/Desktop/clientapp/mathters/app/src/main/res/layout/activity_score.xml" value="0.1793478260869565" />
         <entry key="..\:/Users/XmYoung/Desktop/clientapp/mathters/app/src/main/res/layout/activity_sets.xml" value="0.1793478260869565" />
         <entry key="..\:/Users/XmYoung/Desktop/clientapp/mathters/app/src/main/res/layout/activity_splash.xml" value="0.25364583333333335" />
+        <entry key="..\:/Users/XmYoung/Desktop/clientapp/mathters/app/src/main/res/layout/activity_start_menu.xml" value="0.25364583333333335" />
         <entry key="..\:/Users/XmYoung/Desktop/clientapp/mathters/app/src/main/res/layout/cat_item_layout.xml" value="0.1793478260869565" />
+        <entry key="..\:/Users/XmYoung/Desktop/clientapp/mathters/app/src/main/res/layout/loading_progressbar.xml" value="0.25364583333333335" />
         <entry key="..\:/Users/XmYoung/Desktop/clientapp/mathters/app/src/main/res/layout/set_item_layout.xml" value="0.1793478260869565" />
         <entry key="app/src/main/res/drawable/border.xml" value="0.3921875" />
         <entry key="app/src/main/res/drawable/gradient_background.xml" value="0.24256410256410257" />

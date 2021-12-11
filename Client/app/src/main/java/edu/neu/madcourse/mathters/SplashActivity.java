@@ -50,9 +50,13 @@ public class SplashActivity extends AppCompatActivity {
 
         new Thread() {
             public void run() {
-                   // sleep(3000);
+                try {
+                    sleep(2000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
 
-                    loadData();
+                loadData();
 
 
             }
@@ -88,7 +92,7 @@ public class SplashActivity extends AppCompatActivity {
                         }
 
 
-                        Intent intent = new Intent(SplashActivity.this, LoginActivity.class);
+                        Intent intent = new Intent(SplashActivity.this, StartMenu.class);
                         startActivity(intent);
                         SplashActivity.this.finish();
 

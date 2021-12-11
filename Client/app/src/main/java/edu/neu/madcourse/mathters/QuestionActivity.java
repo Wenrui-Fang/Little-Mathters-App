@@ -74,6 +74,7 @@ public class QuestionActivity extends AppCompatActivity implements View.OnClickL
         questionList = new ArrayList<>();
 
         setNo = getIntent().getIntExtra("SETNO",1);
+        UserDetails.level = String.valueOf(setNo+1);
         firestore = FirebaseFirestore.getInstance();
 
         getQuestionsList();

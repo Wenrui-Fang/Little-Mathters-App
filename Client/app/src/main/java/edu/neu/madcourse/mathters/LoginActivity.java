@@ -76,7 +76,7 @@ public class LoginActivity extends AppCompatActivity {
                                     Toast.makeText(LoginActivity.this, "Logged in successfully!", Toast.LENGTH_LONG).show();
                                     startActivity(new Intent(LoginActivity.this, MainActivity.class));
                                 } else {
-                                    Toast.makeText(LoginActivity.this, "Wrong successfully!", Toast.LENGTH_LONG).show();
+                                    Toast.makeText(LoginActivity.this, "Wrong password!", Toast.LENGTH_LONG).show();
                                 }
                             }
                         }
@@ -86,45 +86,6 @@ public class LoginActivity extends AppCompatActivity {
 
                         }
                     });
-//                    String url = "https://sendingsticker-default-rtdb.firebaseio.com/users.json";
-//                    final ProgressDialog pd = new ProgressDialog(LoginActivity.this);
-//                    pd.setMessage("Loading...");
-//                    pd.show();
-//
-//                    StringRequest request = new StringRequest(Request.Method.GET, url, new Response.Listener<String>(){
-//                        @Override
-//                        public void onResponse(String s) {
-//                            if(s.equals("null")){
-//                                Toast.makeText(Login.this, "user not found", Toast.LENGTH_LONG).show();
-//                            }
-//                            else{
-//                                try {
-//                                    JSONObject obj = new JSONObject(s);
-//
-//                                    if(!obj.has(user)){
-//                                        Toast.makeText(Login.this, "user not found", Toast.LENGTH_LONG).show();
-//                                    }
-//                                    else{
-//                                        UserDetails.username = user;
-//                                        startActivity(new Intent(Login.this, Users.class));
-//                                    }
-//                                } catch (JSONException e) {
-//                                    e.printStackTrace();
-//                                }
-//                            }
-//
-//                            pd.dismiss();
-//                        }
-//                    },new Response.ErrorListener(){
-//                        @Override
-//                        public void onErrorResponse(VolleyError volleyError) {
-//                            System.out.println("" + volleyError);
-//                            pd.dismiss();
-//                        }
-//                    });
-//
-//                    RequestQueue rQueue = Volley.newRequestQueue(Login.this);
-//                    rQueue.add(request);
                 }
             }
         });

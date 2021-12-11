@@ -16,6 +16,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
 import mathters.R;
 
 public class ScoreActivity extends AppCompatActivity {
@@ -40,11 +45,18 @@ public class ScoreActivity extends AppCompatActivity {
         done.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Map<String, String> map = new HashMap<String, String>();
+                String time = new SimpleDateFormat().format(new Date());
+                map.put("time", time);
+                map.put("category", UserDetails.category);
+                map.put("level", UserDetails.level);
+                map.put("score", UserDetails.userscore);
+
                 databaseReference.child("users").addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         if(snapshot.hasChild(UserDetails.username)) {
-                            databaseReference.child("users").child(UserDetails.username).child("score").setValue(UserDetails.userscore);
+                            databaseReference.child("users").child(UserDetails.username).child("score").push().setValue(map);
 
                         } else {
                             Toast.makeText(ScoreActivity.this, "Scores not saved", Toast.LENGTH_LONG).show();
