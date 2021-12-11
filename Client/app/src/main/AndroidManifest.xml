@@ -23,7 +23,11 @@ package="mathters">
             <category android:name="android.intent.category.LAUNCHER" />
         </intent-filter>
     </activity>
-    <activity android:name="edu.neu.madcourse.mathters.MainActivity"></activity>
+    <activity
+        android:name="edu.neu.madcourse.mathters.MainActivity"
+        android:screenOrientation="portrait">
+
+    </activity>
     <activity
         android:name="edu.neu.madcourse.mathters.RegisterActivity"
         android:exported="true" />
@@ -32,6 +36,11 @@ package="mathters">
         android:exported="true" />
     <activity
         android:name="edu.neu.madcourse.mathters.StartMenu"
+        android:exported="true"
+        android:screenOrientation="portrait"
+        />
+    <activity
+        android:name="edu.neu.madcourse.mathters.QuizHistory"
         android:exported="true"
 
         />

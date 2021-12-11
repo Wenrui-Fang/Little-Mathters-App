@@ -25,7 +25,7 @@ public class CategoryActivity extends AppCompatActivity {
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Grade");
+        getSupportActionBar().setTitle("Choose Your Age Group");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         catGrid = findViewById(R.id.catGridview);

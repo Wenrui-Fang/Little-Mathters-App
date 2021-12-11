@@ -20,6 +20,7 @@ import mathters.R;
 public class MainActivity extends AppCompatActivity {
     private TextView title, totalCountView, consecutiveCountView;
     private Button start;
+    private Button history;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
 
         title = findViewById(R.id.main_title);
         start = findViewById(R.id.ma_startB);
+        history = findViewById(R.id.historyButton);
         totalCountView = findViewById(R.id.totalCount);
         consecutiveCountView = findViewById(R.id.consecutiveCount);
 
@@ -40,6 +42,14 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(MainActivity.this, CategoryActivity.class);
                 startActivity(intent);
 
+            }
+        });
+
+        history.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, QuizHistory.class);
+                startActivity(intent);
             }
         });
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
