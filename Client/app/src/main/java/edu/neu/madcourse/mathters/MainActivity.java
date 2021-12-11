@@ -5,25 +5,19 @@ import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
-
 import android.os.Bundle;
-
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-
-
 import mathters.R;
 
 public class MainActivity extends AppCompatActivity {
-
     private TextView title, totalCountView, consecutiveCountView;
     private Button start;
 
@@ -48,9 +42,6 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-
-
-
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
         Calendar calendar = Calendar.getInstance();
 
