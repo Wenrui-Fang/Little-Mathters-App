@@ -14,7 +14,7 @@
         android:background="@color/colorPrimary"
         android:theme="@style/ThemeOverlay.AppCompat.Dark"
 
-        ></androidx.appcompat.widget.Toolbar>
+        />
 
     <TextView
         android:layout_width="match_parent"
@@ -34,6 +34,5 @@
         android:verticalSpacing="16dp"
         android:padding="16dp"
         android:columnWidth="100dp"
-        android:numColumns="auto_fit"
-        ></GridView>
+        android:numColumns="auto_fit" />
 </LinearLayout>
