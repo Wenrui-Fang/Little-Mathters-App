@@ -43,6 +43,7 @@ public class CategoryActivity extends AppCompatActivity {
 
         if(item.getItemId() == android.R.id.home)
         {
+            startActivity(new Intent(CategoryActivity.this, MainActivity.class));
             CategoryActivity.this.finish();
         }
 
