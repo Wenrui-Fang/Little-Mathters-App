@@ -395,7 +395,7 @@ public class QuestionActivity extends AppCompatActivity implements View.OnClickL
             float y = Math.abs(values[1]);
             float z = Math.abs(values[2]);
             // When acceleration exceeds 25, shake successfully
-            if (x > 10 || y > 10 || z > 10) {
+            if (x > 25 || y > 25 || z > 25) {
                 isShake = true;
                 // Play sound
                 playSound(QuestionActivity.this, R.raw.shake_sound);
