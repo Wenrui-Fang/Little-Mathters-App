@@ -111,4 +111,9 @@ public class SplashActivity extends AppCompatActivity {
         });
 
     }
+
+    @Override
+    public void onBackPressed() {
+        SplashActivity.this.finish();
+    }
 }
