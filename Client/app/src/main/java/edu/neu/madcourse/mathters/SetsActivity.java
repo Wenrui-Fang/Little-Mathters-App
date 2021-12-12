@@ -106,7 +106,9 @@ public class SetsActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+        super.onBackPressed();
         Intent intent = new Intent(SetsActivity.this, CategoryActivity.class);
+        SetsActivity.this.finish();
         startActivity(intent);
     }
 }

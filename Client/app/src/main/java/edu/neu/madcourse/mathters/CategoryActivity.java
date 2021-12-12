@@ -52,7 +52,9 @@ public class CategoryActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+        super.onBackPressed();
         Intent intent = new Intent(CategoryActivity.this, MainActivity.class);
+        CategoryActivity.this.finish();
         startActivity(intent);
     }
 }
