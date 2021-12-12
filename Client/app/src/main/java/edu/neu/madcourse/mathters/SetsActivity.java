@@ -98,6 +98,7 @@ public class SetsActivity extends AppCompatActivity {
 
         if(item.getItemId() == android.R.id.home)
         {
+            startActivity(new Intent(SetsActivity.this, CategoryActivity.class));
             SetsActivity.this.finish();
         }
         return super.onOptionsItemSelected(item);
